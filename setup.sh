@@ -1,7 +1,8 @@
 #!/bin/bash
 
 cd ~/
-PHOROMATIC_SERVER=$1
+echo "Please enter your Phoromatic URL: "
+read PHOROMATIC_SERVER
 
 #/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -12,8 +13,9 @@ eval "$(/usr/local/bin/brew shellenv)"
 
 
 brew install php
+brew install stats
 
-cp -R /Volumes/Phoronix/phoronix-test-suite ~/
+git clone https://github.com/phoronix-test-suite/phoronix-test-suite
 cd ~/phoronix-test-suite
 
 ./phoronix-test-suite phoromatic.connect "$PHOROMATIC_SERVER"
