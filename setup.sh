@@ -18,8 +18,12 @@ detect_os() {
         OS_TYPE="debian"
     elif apk version &>/dev/null; then
         OS_TYPE="alpine"
+    else
+        echo "CRITICAL ERROR: UNSUPPORTED OS"
+        exit 1
     fi
-echo "OS Detected: $OS_TYPE"
+
+    echo "OS Detected: $OS_TYPE"
 }
 
 detect_arch() {
@@ -34,20 +38,20 @@ detect_arch() {
 
 #----debian----
 install_git_debian() {
-    apt install git
+    sudo apt install git
 }
 
 install_php_debian() {
-    apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+    sudo apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
 }
 
 #----alpine----
 install_git_alpine() {
-    apk add git
+    sudo apk add git
 }
 
 install_php_alpine() {
-    apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets
+    sudo apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets
 }
 
 
@@ -98,6 +102,9 @@ install_stats() {
         echo "Installing Stats"
         brew install stats
     fi
+
+    open -a stats
+
 }
 
 install_osx_cpu_temp() {
@@ -108,7 +115,7 @@ install_osx_cpu_temp() {
     fi
 
     echo "Downloading new OSX-CPU-Temp"
-    git clone https://github.com/BourgonLaurent/osx-cpu-temp
+    git clone https://github.com/nkerschner/osx-cpu-temp
     cd osx-cpu-temp
     make
     sudo make install
@@ -189,5 +196,4 @@ detect_os
 detect_arch
 welcome_message
 install_all
-open -a stats
 connect_phoromatic
