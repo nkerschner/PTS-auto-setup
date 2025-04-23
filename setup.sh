@@ -113,12 +113,14 @@ install_all() {
 connect_phoromatic() {    
     cd ~/phoronix-test-suite
 
+    echo ""
+    echo "----------------------------------------------"
     read -p "Enter y to use the default Phoromatic URL ("$DEFAULT_PHOROMATIC_URL"), or n to input a new Phoromatic URL: " userChoice
 
-    if [[ "$userChoice" == "y" ]]; then
-        PHOROMATIC_URL="$DEFAULT_PHOROMATIC_URL"
-    else
+    if [[ "$userChoice" == "n" ]]; then
         get_phoromatic_url
+    else
+        PHOROMATIC_URL="$DEFAULT_PHOROMATIC_URL"
     fi
 
 
