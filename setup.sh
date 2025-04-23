@@ -57,6 +57,8 @@ install_xcode_tools() {
     if command -v git &>/dev/null; then
         echo "git installed, moving on"
     else
+        echo "Git not found, installing now"
+        echo "Installation prompt should pop up"
         xcode-select --install
         read -p "Press enter once xcode install is complete" xcode_complete
     fi
@@ -64,9 +66,10 @@ install_xcode_tools() {
 
 install_homebrew() {
     if command -v brew &>/dev/null; then
-        echo "homebrew installed, updating instead
+        echo "homebrew installed, updating instead"
         brew update
-    else     
+    else
+        echo "Installing Homebrew"     
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         echo >> "$HOME"/.zprofile
         echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME"/.zprofile
@@ -75,10 +78,11 @@ install_homebrew() {
 }
 
 install_php_macOS() {
-    if brew list &>/dev/null; then
+    if brew list php &>/dev/null; then
         echo "PHP already installed, updating"
         brew upgrade php
     else
+        echo "Installing PHP"
         brew install php
     fi
 
@@ -87,10 +91,11 @@ install_php_macOS() {
 }
 
 install_stats() {
-    if brew list stats &>/dev/null; then
+    if [ -f "/Applications/stats.app" &>/dev/null; then
         echo "Stats already installed, updating"
         brew upgrade stats
     else
+        echo "Installing Stats"
         brew install stats
     fi
 }
@@ -98,10 +103,11 @@ install_stats() {
 install_osx_cpu_temp() {
     # Remove existing directory if it exists
     if [ -d "osx-cpu-temp" ]; then
-        log_message "Removing existing osx-cpu-temp directory..."
+        echo "Removing existing osx-cpu-temp folder"
         rm -rf osx-cpu-temp
     fi
 
+    echo "Downloading new OSX-CPU-Temp"
     git clone https://github.com/BourgonLaurent/osx-cpu-temp
     cd osx-cpu-temp
     make
@@ -114,10 +120,11 @@ install_osx_cpu_temp() {
 install_pts(){
     # Remove existing directory if it exists
     if [ -d "phoronix-test-suite" ]; then
-        log_message "Removing existing phoronix-test-suite directory..."
+        echo "Removing existing phoronix-test-suite folder"
         rm -rf phoronix-test-suite
     fi
 
+    echo "Downloading latest Phoronix-Test-Suite"
     git clone https://github.com/phoronix-test-suite/phoronix-test-suite
 }
 
@@ -155,7 +162,7 @@ connect_phoromatic() {
 
     echo ""
     echo "----------------------------------------------"
-    read -p "Enter y to use the default Phoromatic URL ("$DEFAULT_PHOROMATIC_URL"), or n to input a new Phoromatic URL: " userChoice
+    read -p "Press enter to use the default Phoromatic URL ("$DEFAULT_PHOROMATIC_URL"), or press 'n' to input a new Phoromatic URL: " userChoice
 
     if [[ "$userChoice" == "n" ]]; then
         get_phoromatic_url
