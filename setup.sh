@@ -52,8 +52,8 @@ install_xcode_tools() {
 install_homebrew() {
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-    echo >> /Users/open/.zprofile
-    echo 'eval "$(/usr/local/bin/brew shellenv)"' >> /Users/open/.zprofile
+    echo >> "$HOME"/.zprofile
+    echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME"/.zprofile
     eval "$(/usr/local/bin/brew shellenv)"
 }
 
