@@ -142,6 +142,7 @@ install_all() {
     echo "=============================================="
     
     if [[ "$OS_TYPE" == "macOS" ]]; then
+        sudo -v
         install_xcode_tools
         install_homebrew
         install_php_macOS
