@@ -3,7 +3,7 @@
 DEFAULT_PHOROMATIC_URL=phoromatic:8433/Q1CST9
 
 go_home() {
-    cd ~/
+    cd $HOME
 }
 
 get_phoromatic_url() {
@@ -21,6 +21,15 @@ detect_os() {
     fi
 echo "OS Detected: $OS_TYPE"
 }
+
+detect_arch() {
+    if [[ "$(uname -m)" == "arm64" ]]; then
+        ARCH="arm64"
+    else
+        ARCH="x86_64"
+    fi
+}
+
 
 
 #----debian----
@@ -44,31 +53,55 @@ install_php_alpine() {
 
 #----macOS----
 install_xcode_tools() {
-    xcode-select --install
     
-    read -p "Press enter once xcode install is complete" xcode_complete
+    if command -v git &>/dev/null; then
+        echo "git installed, moving on"
+    else
+        xcode-select --install
+        read -p "Press enter once xcode install is complete" xcode_complete
+    fi
 }
 
 install_homebrew() {
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-    echo >> "$HOME"/.zprofile
-    echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME"/.zprofile
-    eval "$(/usr/local/bin/brew shellenv)"
+    if command -v brew &>/dev/null; then
+        echo "homebrew installed, updating instead
+        brew update
+    else     
+        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        echo >> "$HOME"/.zprofile
+        echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME"/.zprofile
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
 }
 
 install_php_macOS() {
+    if brew list &>/dev/null; then
+        echo "PHP already installed, updating"
+        brew upgrade php
+    else
+        brew install php
+    fi
 
-    brew install php
     brew services restart php
 
 }
 
 install_stats() {
-    brew install stats
+    if brew list stats &>/dev/null; then
+        echo "Stats already installed, updating"
+        brew upgrade stats
+    else
+        brew install stats
+    fi
 }
 
 install_osx_cpu_temp() {
+    # Remove existing directory if it exists
+    if [ -d "osx-cpu-temp" ]; then
+        log_message "Removing existing osx-cpu-temp directory..."
+        rm -rf osx-cpu-temp
+    fi
+
     git clone https://github.com/BourgonLaurent/osx-cpu-temp
     cd osx-cpu-temp
     make
@@ -77,11 +110,18 @@ install_osx_cpu_temp() {
     go_home
 }
 
+#----OS agnostic----
 install_pts(){
+    # Remove existing directory if it exists
+    if [ -d "phoronix-test-suite" ]; then
+        log_message "Removing existing phoronix-test-suite directory..."
+        rm -rf phoronix-test-suite
+    fi
+
     git clone https://github.com/phoronix-test-suite/phoronix-test-suite
 }
 
-#----OS agnostic----
+
 install_all() {
     echo "==============================================" 
     echo "    Installing prerequisite software"
@@ -139,6 +179,8 @@ welcome_message() {
 # Main
 go_home
 detect_os
+detect_arch
 welcome_message
 install_all
+open -a stats
 connect_phoromatic
