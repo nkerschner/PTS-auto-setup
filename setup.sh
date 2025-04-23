@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#######################################################
+# PTS-Auto-Setup - setup script for Phoronix-Test-suite
+# https://github.com/nkerschner/PTS-auto-setup/setup.sh
+# v2.0
+#######################################################
+
 DEFAULT_PHOROMATIC_URL=phoromatic:8433/Q1CST9
 
 go_home() {
@@ -185,10 +191,30 @@ connect_phoromatic() {
     ./phoronix-test-suite phoromatic.connect "$PHOROMATIC_URL"
 }
 
+# display a random message of the day
+function message_of_the_day() {
+    local messages=(
+        "*insert motd here*"
+        "It's not a bug, it's an undocumented feature."
+        "The 'cloud' is just someone else's computer."
+        "I can explain it to you, but I can't understand it for you."
+        "Artificial intelligence is no match for natural stupidity."
+        "When in doubt, add another if statement."
+        "Terminal: Where MacOS users pretend they're Linux users."
+        "Macs don't get viruses, they get 'unexpected behaviors.'"
+        "MacOS: Because sometimes you just want things to 'just work'... eventually."
+        "Please suggest more messages"
+    )
+
+  echo "${messages[$RANDOM % ${#messages[@]}]}"
+}
+
 welcome_message() {
     echo "=============================================="
     echo "    Welcome to the Phoromatic Setup Script    "
     echo "=============================================="
+    message_of_the_day
+    sleep 5
 }
 
 # Main
