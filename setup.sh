@@ -53,11 +53,11 @@ install_php_debian() {
 
 #----alpine----
 install_git_alpine() {
-    sudo apk add git
+    doas apk add git
 }
 
 install_php_alpine() {
-    sudo apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets
+    doas apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets
 }
 
 
