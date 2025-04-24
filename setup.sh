@@ -154,7 +154,6 @@ install_all() {
         install_php_macOS
         install_stats
         install_osx_cpu_temp
-        caffeinate -di
     elif [[ "$OS_TYPE" == "debian" ]]; then
         install_git_debian
         install_php_debian
