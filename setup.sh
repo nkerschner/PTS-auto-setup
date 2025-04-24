@@ -149,6 +149,7 @@ install_all() {
     
     if [[ "$OS_TYPE" == "macOS" ]]; then
         sudo -v
+        caffeinate -di
         install_xcode_tools
         install_homebrew
         install_php_macOS
