@@ -149,12 +149,12 @@ install_all() {
     
     if [[ "$OS_TYPE" == "macOS" ]]; then
         sudo -v
-        caffeinate -di
         install_xcode_tools
         install_homebrew
         install_php_macOS
         install_stats
         install_osx_cpu_temp
+        caffeinate -di
     elif [[ "$OS_TYPE" == "debian" ]]; then
         install_git_debian
         install_php_debian
