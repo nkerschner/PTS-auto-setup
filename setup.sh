@@ -69,7 +69,7 @@ install_git_alpine() {
 }
 
 install_php_alpine() {
-    "$alp_priv_cmd" apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets
+    "$alp_priv_cmd" apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
 }
 
 
