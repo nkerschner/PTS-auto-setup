@@ -17,6 +17,17 @@ get_phoromatic_url() {
     read PHOROMATIC_URL
 }
 
+alpine_get_priv_cmd() {
+    if command -v doas &>/dev/null; then
+        alp_priv_cmd="doas"
+    elif command -v sudo &>/dev/null; then
+        alp_priv_cmd="sudo"
+    else
+        echo "Neither sudo or doas found, cannot continue"
+        exit 1
+    fi
+}
+
 detect_os() {
     if [[ "$OSTYPE" == "darwin"* ]]; then
         OS_TYPE="macOS"
@@ -24,6 +35,7 @@ detect_os() {
         OS_TYPE="debian"
     elif apk version &>/dev/null; then
         OS_TYPE="alpine"
+        alpine_get_priv_cmd
     else
         echo "CRITICAL ERROR: UNSUPPORTED OS"
         exit 1
@@ -53,11 +65,11 @@ install_php_debian() {
 
 #----alpine----
 install_git_alpine() {
-    doas apk add git
+    "$alp_priv_cmd" apk add git
 }
 
 install_php_alpine() {
-    doas apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets
+    "$alp_priv_cmd" apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets
 }
 
 
@@ -101,7 +113,7 @@ install_php_macOS() {
 }
 
 install_stats() {
-    if [ -f "/Applications/stats.app" &>/dev/null; then
+    if [ -f "/Applications/stats.app" ]; then
         echo "Stats already installed, updating"
         brew upgrade stats
     else
