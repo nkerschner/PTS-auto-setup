@@ -75,7 +75,7 @@ remove_php_debian() {
 
 #----alpine----
 remove_git_alpine() {
-    if [[ "$is_root" == 'u ]]; then
+    if [[ "$is_root" == "y" ]]; then
         apk del git
     else
         "$alp_priv_cmd" apk del git
