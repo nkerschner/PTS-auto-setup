@@ -113,7 +113,7 @@ install_php_macOS() {
 }
 
 install_stats() {
-    if [ -f "/Applications/stats.app" ]; then
+    if [ -d "/Applications/stats.app" ]; then
         echo "Stats already installed, updating"
         brew upgrade stats
     else
