@@ -231,6 +231,14 @@ function message_of_the_day() {
         "Turning it off and on again: The IT equivalent of 'Put some ice on it.'"
         "Keyboard not found. Press F1 to continue."
         "There are two hard problems in computer science: cache invalidation, naming things, and off-by-one errors."
+        "Cloud computing: Never having to worry where your data is, because it's definitely somewhere."
+        "The problem with troubleshooting is that trouble shoots back."
+        "We use version control so we know exactly who to blame."
+        "My laptop's not overheating, it's trying to achieve nuclear fusion with dust particles."
+        "Every Linux distro is the same. Just different enough to break all your scripts."
+        "In Windows, viruses do horrible things to your computer. In Linux, your computer does horrible things to you."
+        "MacOS is Unix with a fashion degree and a trust fund."
+        "MacBook Pro: It's not throttling, it's 'thermal mindfulness.'"
         "Please suggest more messages"
     )
 
