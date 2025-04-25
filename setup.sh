@@ -287,10 +287,9 @@ function message_of_the_day() {
         "Backwards compatibility: Retaining all the mistakes of the previous version."
         "To make an error is human. To spread the error across all servers in an automated way is DevOps."
         "A good man would rotate SSH keys, but I'm not that man."
-        “Some days you are the bug, and some days you are the windshield”
-        “Next time hit it with a hammer.”
-        "Never trust a computer you can’t throw out a window. - Steve Wozniak”
-        
+        "Some days you are the bug, and some days you are the windshield"
+        "Next time hit it with a hammer."
+        "Never trust a computer you can’t throw out a window. - Steve Wozniak"
         "Please suggest more messages"
     )
 
