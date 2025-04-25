@@ -18,8 +18,8 @@ get_phoromatic_url() {
 }
 
 get_priv_cmd() {
-    if [[ "$whoami" == "root" ]]; then
-        priv_cmd=""
+    if [[ $(whoami) == "root" ]]; then
+        is_root="y"
     elif command -v doas &>/dev/null; then
         priv_cmd="doas"
     elif command -v sudo &>/dev/null; then
@@ -35,9 +35,10 @@ detect_os() {
         OS_TYPE="macOS"
     elif apt -v &>/dev/null; then
         OS_TYPE="debian"
+        get_priv_cmd
     elif apk version &>/dev/null; then
         OS_TYPE="alpine"
-        alpine_get_priv_cmd
+        get_priv_cmd
     else
         echo "CRITICAL ERROR: UNSUPPORTED OS"
         exit 1
@@ -58,20 +59,36 @@ detect_arch() {
 
 #----debian----
 install_git_debian() {
-    "$priv_cmd" apt install git
+    if [[ "$is_root" == "y" ]]; then
+        apt install git
+    else
+        "$priv_cmd" apt install git
+    fi
 }
 
 install_php_debian() {
-    "$priv_cmd" apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+    if [[ "$is_root" == "y" ]]; then
+        apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+    else
+        "$priv_cmd" apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+    fi
 }
 
 #----alpine----
 install_git_alpine() {
-    "$priv_cmd" apk add git
+    if [[ "$is_root" == "y" ]]; then
+        apk add git
+    else
+        "$priv_cmd" apk add git
+    fi
 }
 
 install_php_alpine() {
-    "$priv_cmd" apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+    if [[ "$is_root" == "y" ]]; then
+        apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+    else
+        "$priv_cmd" apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+    fi
 }
 
 
