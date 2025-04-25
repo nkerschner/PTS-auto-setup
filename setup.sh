@@ -3,7 +3,7 @@
 #######################################################
 # PTS-Auto-Setup - setup script for Phoronix-Test-suite
 # https://github.com/nkerschner/PTS-auto-setup/setup.sh
-# v2.0
+# v2.1
 #######################################################
 
 DEFAULT_PHOROMATIC_URL=phoromatic:8433/Q1CST9
