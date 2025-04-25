@@ -160,6 +160,7 @@ install_stats() {
         brew install stats
     fi
 
+    sleep 5
     open -a stats
 
 }
