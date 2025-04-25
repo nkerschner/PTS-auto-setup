@@ -3,7 +3,7 @@
 #######################################################
 # PTS-Auto-Setup - removal script for Phoronix-Test-suite
 # https://github.com/nkerschner/PTS-auto-setup/remove.sh
-# v1.0
+# v2.1
 #######################################################
 
 DEFAULT_PHOROMATIC_URL=phoromatic:8433/Q1CST9
@@ -12,11 +12,13 @@ go_home() {
     cd $HOME
 }
 
-alpine_get_priv_cmd() {
-    if command -v doas &>/dev/null; then
-        alp_priv_cmd="doas"
+get_priv_cmd() {
+    if [[ $(whoami) == "root" ]]; then
+        is_root="y"
+    elif command -v doas &>/dev/null; then
+        priv_cmd="doas"
     elif command -v sudo &>/dev/null; then
-        alp_priv_cmd="sudo"
+        priv_cmd="sudo"
     else
         echo "Neither sudo or doas found, cannot continue"
         exit 1
@@ -28,9 +30,10 @@ detect_os() {
         OS_TYPE="macOS"
     elif apt -v &>/dev/null; then
         OS_TYPE="debian"
+        get_priv_cmd
     elif apk version &>/dev/null; then
         OS_TYPE="alpine"
-        alpine_get_priv_cmd
+        get_priv_cmd
     else
         echo "CRITICAL ERROR: UNSUPPORTED OS"
         exit 1
@@ -51,22 +54,40 @@ detect_arch() {
 
 #----debian----
 remove_git_debian() {
-    sudo apt remove -y git
-    sudo apt autoremove -y
+   if [[ "$is_root" == "y" ]]; then
+        apt remove -y git
+        apt autoremove -y
+    else
+        "$priv_cmd" apt remove -y git
+        "$priv_cmd" apt autoremove -y
+    fi
 }
 
 remove_php_debian() {
-    sudo apt remove -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
-    sudo apt autoremove -y
+   if [[ "$is_root" == "y" ]]; then
+        apt remove -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+        apt autoremove -y
+    else
+        "$priv_cmd" apt remove -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+        "$priv_cmd" apt autoremove -y
+    fi
 }
 
 #----alpine----
 remove_git_alpine() {
-    "$alp_priv_cmd" apk del git
+    if [[ "$is_root" == 'u ]]; then
+        apk del git
+    else
+        "$alp_priv_cmd" apk del git
+    fi
 }
 
 remove_php_alpine() {
-    "$alp_priv_cmd" apk del php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+    if [[ "$is_root" == "y" ]]; then
+        apk del php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+    else
+        "$alp_priv_cmd" apk del php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+    fi
 }
 
 
@@ -187,6 +208,16 @@ function message_of_the_day() {
         "In Windows, viruses do horrible things to your computer. In Linux, your computer does horrible things to you."
         "MacOS is Unix with a fashion degree and a trust fund."
         "MacBook Pro: It's not throttling, it's 'thermal mindfulness.'"
+        "We don't do it because it's easy; we do it because we thought it would be easy"
+        "Never spend 5 hours on a task that you could spend 5 days failing to automate."
+        "There is nothing more permanent than a temporary solution"
+        "Everybody has a test environment; some of us are lucky and have a separate production environment, too."
+        "Backwards compatibility: Retaining all the mistakes of the previous version."
+        "To make an error is human. To spread the error across all servers in an automated way is DevOps."
+        "A good man would rotate SSH keys, but I'm not that man."
+        "Some days you are the bug, and some days you are the windshield"
+        "Next time hit it with a hammer."
+        "Never trust a computer you can’t throw out a window. - Steve Wozniak"
         "Please suggest more messages"
     )
 
