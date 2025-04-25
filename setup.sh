@@ -17,11 +17,13 @@ get_phoromatic_url() {
     read PHOROMATIC_URL
 }
 
-alpine_get_priv_cmd() {
-    if command -v doas &>/dev/null; then
-        alp_priv_cmd="doas"
+get_priv_cmd() {
+    if [[ "$whoami" == "root" ]]; then
+        priv_cmd=""
+    elif command -v doas &>/dev/null; then
+        priv_cmd="doas"
     elif command -v sudo &>/dev/null; then
-        alp_priv_cmd="sudo"
+        priv_cmd="sudo"
     else
         echo "Neither sudo or doas found, cannot continue"
         exit 1
@@ -56,20 +58,20 @@ detect_arch() {
 
 #----debian----
 install_git_debian() {
-    sudo apt install git
+    "$priv_cmd" apt install git
 }
 
 install_php_debian() {
-    sudo apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+    "$priv_cmd" apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
 }
 
 #----alpine----
 install_git_alpine() {
-    "$alp_priv_cmd" apk add git
+    "$priv_cmd" apk add git
 }
 
 install_php_alpine() {
-    "$alp_priv_cmd" apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+    "$priv_cmd" apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
 }
 
 
