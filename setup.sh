@@ -58,23 +58,43 @@ detect_arch() {
 
 
 #----debian----
+update_debian() {
+    if [[ "$is_root" == "y" ]]; then
+        apt update
+        apt upgrade -y
+    else
+        "$priv_cmd" apt update
+        "$priv_cmd" apt upgrade -y
+    fi
+}
+
 install_git_debian() {
     if [[ "$is_root" == "y" ]]; then
-        apt install git
+        apt install -y git
     else
-        "$priv_cmd" apt install git
+        "$priv_cmd" apt install -y git
     fi
 }
 
 install_php_debian() {
     if [[ "$is_root" == "y" ]]; then
-        apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+        apt install -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
     else
-        "$priv_cmd" apt install php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+        "$priv_cmd" apt install -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
     fi
 }
 
 #----alpine----
+update_alpine() {
+    if [[ "$is_root" == "y" ]]; then
+        apk update
+        apk upgrade
+    else
+        "$priv_cmd" apk update 
+        "$priv_cmd" apk upgrade
+    fi
+}
+
 install_git_alpine() {
     if [[ "$is_root" == "y" ]]; then
         apk add git
@@ -186,9 +206,11 @@ install_all() {
         install_stats
         install_osx_cpu_temp
     elif [[ "$OS_TYPE" == "debian" ]]; then
+        update_debian
         install_git_debian
         install_php_debian
     elif [[ "$OS_TYPE" == "alpine" ]]; then
+        update_alpine
         install_git_alpine
         install_php_alpine
     else
@@ -258,6 +280,17 @@ function message_of_the_day() {
         "In Windows, viruses do horrible things to your computer. In Linux, your computer does horrible things to you."
         "MacOS is Unix with a fashion degree and a trust fund."
         "MacBook Pro: It's not throttling, it's 'thermal mindfulness.'"
+        "We don't do it because it's easy; we do it because we thought it would be easy"
+        "Never spend 5 hours on a task that you could spend 5 days failing to automate."
+        "There is nothing more permanent than a temporary solution"
+        "Everybody has a test environment; some of us are lucky and have a separate production environment, too."
+        "Backwards compatibility: Retaining all the mistakes of the previous version."
+        "To make an error is human. To spread the error across all servers in an automated way is DevOps."
+        "A good man would rotate SSH keys, but I'm not that man."
+        “Some days you are the bug, and some days you are the windshield”
+        “Next time hit it with a hammer.”
+        "Never trust a computer you can’t throw out a window. - Steve Wozniak”
+        
         "Please suggest more messages"
     )
 
