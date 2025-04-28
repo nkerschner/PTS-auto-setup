@@ -238,8 +238,8 @@ welcome_message() {
 }
 
 # Main
+welcome_message
 go_home
 detect_os
 detect_arch
-welcome_message
 remove_all
