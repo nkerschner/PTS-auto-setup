@@ -291,6 +291,7 @@ function message_of_the_day() {
         "Some days you are the bug, and some days you are the windshield"
         "Next time hit it with a hammer."
         "Never trust a computer you can’t throw out a window. - Steve Wozniak"
+        "This is JJ. I'm trapped in this computer. Please help."
         "Please suggest more messages"
     )
 
