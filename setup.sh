@@ -303,13 +303,13 @@ welcome_message() {
     echo "    Welcome to the Phoromatic Setup Script    "
     echo "=============================================="
     message_of_the_day
-    sleep 5
+    sleep 3
 }
 
 # Main
+welcome_message
 go_home
 detect_os
 detect_arch
-welcome_message
 install_all
 connect_phoromatic

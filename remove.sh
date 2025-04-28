@@ -6,8 +6,6 @@
 # v2.1
 #######################################################
 
-DEFAULT_PHOROMATIC_URL=phoromatic:8433/Q1CST9
-
 go_home() {
     cd $HOME
 }
@@ -98,6 +96,12 @@ remove_homebrew() {
     if command -v brew &>/dev/null; then
         echo "Uninstalling Homebrew"
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
+
+        if [ -d "/usr/local/Homebrew/" ]; then
+            rm -rf "/usr/local/Homebrew/ "
+        fi
+    else
+        echo "Homebrew not found"
     fi
 }
 
@@ -218,6 +222,7 @@ function message_of_the_day() {
         "Some days you are the bug, and some days you are the windshield"
         "Next time hit it with a hammer."
         "Never trust a computer you can’t throw out a window. - Steve Wozniak"
+        "This is JJ. I'm trapped in this computer. Please help."
         "Please suggest more messages"
     )
 
