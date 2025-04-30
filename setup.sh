@@ -39,6 +39,9 @@ detect_os() {
     elif apk version >/dev/null 2>&1; then
         OS_TYPE="alpine"
         get_priv_cmd
+    elif command -v dnf >/dev/null 2>&1; then
+        OS_TYPE="rhel"
+        get_priv_cmd
     else
         echo "CRITICAL ERROR: UNSUPPORTED OS"
         exit 1
@@ -106,6 +109,33 @@ install_php_alpine() {
         apk add php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
     else
         $priv_cmd apk add php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
+    fi
+}
+
+#----rhel----
+update_rhel() {
+    if [ "$is_root" = "y" ]; then
+        dnf update
+        dnf upgrade -y
+    else
+        $priv_cmd dnf update
+        $priv_cmd dnf upgrade -y
+    fi
+}
+
+install_git_rhel() {
+    if [ "$is_root" = "y" ]; then
+        dnf install -y git
+    else
+        $priv_cmd dnf install -y git
+    fi
+}
+
+install_php_rhel() {
+    if [ "$is_root" = "y" ]; then
+        dnf install -y php-cli php-xml php-zip php-gd php-curl php-sqlite3 php-posix
+    else
+        $priv_cmd dnf install -y php-cli php-xml php-zip php-gd php-curl php-sqlite3 php-posix
     fi
 }
 
@@ -208,6 +238,10 @@ install_all() {
         update_alpine
         install_git_alpine
         install_php_alpine
+    elif [ "$OS_TYPE" = "rhel" ]; then
+        update_rhel
+        install_git_rhel
+        install_php_rhel
     else
         echo "CRITICAL ERROR: UNSUPPORTED OS"
         exit 1
