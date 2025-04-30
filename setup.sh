@@ -3,7 +3,7 @@
 #######################################################
 # PTS-Auto-Setup - setup script for Phoronix-Test-suite
 # https://github.com/nkerschner/PTS-auto-setup/setup.sh
-# v2.3 (modern POSIX compliant version)
+# v2.3 (modern POSIX compliant)
 #######################################################
 
 DEFAULT_PHOROMATIC_URL=phoromatic:8433/Q1CST9
@@ -18,12 +18,15 @@ get_phoromatic_url() {
 }
 
 get_priv_cmd() {
-    if [ "$(whoami)" = "root" ]; then
+    if [[ $(whoami) == "root" ]]; then
         is_root="y"
-    elif command -v doas >/dev/null 2>&1; then
+        echo "running as root"
+    elif command -v doas &>/dev/null 2>&1; then
         priv_cmd="doas"
-    elif command -v sudo >/dev/null 2>&1; then
+        echo "using 'doas'"
+    elif command -v sudo &>/dev/null 2>&1; then
         priv_cmd="sudo"
+        echo "using 'sudo'"
     else
         echo "Neither sudo or doas found, cannot continue"
         exit 1
@@ -117,7 +120,7 @@ update_rhel() {
     if [ "$is_root" = "y" ]; then
         dnf update -y
     else
-        $priv_cmd dnf update
+        $priv_cmd dnf update -y
     fi
 }
 
@@ -131,9 +134,9 @@ install_git_rhel() {
 
 install_php_rhel() {
     if [ "$is_root" = "y" ]; then
-        dnf install -y php-cli php-xml php-zip php-gd php-curl php-sqlite3 php-posix
+        dnf install -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
     else
-        $priv_cmd dnf install -y php-cli php-xml php-zip php-gd php-curl php-sqlite3 php-posix
+        $priv_cmd dnf install -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
     fi
 }
 
