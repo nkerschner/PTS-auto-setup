@@ -103,9 +103,9 @@ install_git_alpine() {
 
 install_php_alpine() {
     if [ "$is_root" = "y" ]; then
-        apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+        apk add php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
     else
-        $priv_cmd apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+        $priv_cmd apk add php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
     fi
 }
 
