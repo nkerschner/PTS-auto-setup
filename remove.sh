@@ -97,17 +97,17 @@ remove_php_alpine() {
 #----rhel----
 remove_git_rhel() {
     if [ "$is_root" = "y" ]; then
-        dnf install -y git
+        dnf remove -y git
     else
-        $priv_cmd dnf install -y git
+        $priv_cmd dnf remove -y git
     fi
 }
 
 remove_php_rhel() {
     if [ "$is_root" = "y" ]; then
-        dnf install -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
+        dnf remove -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
     else
-        $priv_cmd dnf install -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
+        $priv_cmd dnf remove -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
     fi
 }
 
