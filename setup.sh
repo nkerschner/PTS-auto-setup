@@ -1,15 +1,15 @@
-#!/bin/bash
+#!/bin/sh
 
 #######################################################
 # PTS-Auto-Setup - setup script for Phoronix-Test-suite
 # https://github.com/nkerschner/PTS-auto-setup/setup.sh
-# v2.1
+# v2.2 (modern POSIX compliant version)
 #######################################################
 
 DEFAULT_PHOROMATIC_URL=phoromatic:8433/Q1CST9
 
 go_home() {
-    cd $HOME
+    cd "$HOME"
 }
 
 get_phoromatic_url() {
@@ -18,11 +18,11 @@ get_phoromatic_url() {
 }
 
 get_priv_cmd() {
-    if [[ $(whoami) == "root" ]]; then
+    if [ "$(whoami)" = "root" ]; then
         is_root="y"
-    elif command -v doas &>/dev/null; then
+    elif command -v doas >/dev/null 2>&1; then
         priv_cmd="doas"
-    elif command -v sudo &>/dev/null; then
+    elif command -v sudo >/dev/null 2>&1; then
         priv_cmd="sudo"
     else
         echo "Neither sudo or doas found, cannot continue"
@@ -31,12 +31,12 @@ get_priv_cmd() {
 }
 
 detect_os() {
-    if [[ "$OSTYPE" == "darwin"* ]]; then
+    if echo "$OSTYPE" | grep -q "darwin"; then
         OS_TYPE="macOS"
-    elif apt -v &>/dev/null; then
+    elif apt -v >/dev/null 2>&1; then
         OS_TYPE="debian"
         get_priv_cmd
-    elif apk version &>/dev/null; then
+    elif apk version >/dev/null 2>&1; then
         OS_TYPE="alpine"
         get_priv_cmd
     else
@@ -48,90 +48,87 @@ detect_os() {
 }
 
 detect_arch() {
-    if [[ "$(uname -m)" == "arm64" ]]; then
+    if [ "$(uname -m)" = "arm64" ]; then
         ARCH="arm64"
     else
         ARCH="x86_64"
     fi
 }
 
-
-
 #----debian----
 update_debian() {
-    if [[ "$is_root" == "y" ]]; then
+    if [ "$is_root" = "y" ]; then
         apt update
         apt upgrade -y
     else
-        "$priv_cmd" apt update
-        "$priv_cmd" apt upgrade -y
+        $priv_cmd apt update
+        $priv_cmd apt upgrade -y
     fi
 }
 
 install_git_debian() {
-    if [[ "$is_root" == "y" ]]; then
+    if [ "$is_root" = "y" ]; then
         apt install -y git
     else
-        "$priv_cmd" apt install -y git
+        $priv_cmd apt install -y git
     fi
 }
 
 install_php_debian() {
-    if [[ "$is_root" == "y" ]]; then
+    if [ "$is_root" = "y" ]; then
         apt install -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
     else
-        "$priv_cmd" apt install -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+        $priv_cmd apt install -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
     fi
 }
 
 #----alpine----
 update_alpine() {
-    if [[ "$is_root" == "y" ]]; then
+    if [ "$is_root" = "y" ]; then
         apk update
         apk upgrade
     else
-        "$priv_cmd" apk update 
-        "$priv_cmd" apk upgrade
+        $priv_cmd apk update 
+        $priv_cmd apk upgrade
     fi
 }
 
 install_git_alpine() {
-    if [[ "$is_root" == "y" ]]; then
+    if [ "$is_root" = "y" ]; then
         apk add git
     else
-        "$priv_cmd" apk add git
+        $priv_cmd apk add git
     fi
 }
 
 install_php_alpine() {
-    if [[ "$is_root" == "y" ]]; then
+    if [ "$is_root" = "y" ]; then
         apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
     else
-        "$priv_cmd" apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
+        $priv_cmd apk add php-cli php-dom php-simplexml php-zip php-gd php-curl php-sqlite3 php-ssh2 php-posix php-ctype php-fileinfo php-pcntl php-sockets php-openssl php-bz2
     fi
 }
 
-
 #----macOS----
 install_xcode_tools() {
-    
-    if command -v git &>/dev/null; then
+    if command -v git >/dev/null 2>&1; then
         echo "git installed, moving on"
     else
         echo "Git not found, installing now"
         echo "Installation prompt should pop up"
         xcode-select --install
-        read -p "Press enter once xcode install is complete" xcode_complete
+        read xcode_complete
+        echo "Continuing after xcode tools installation"
     fi
 }
 
 install_homebrew() {
-    if command -v brew &>/dev/null; then
+    if command -v brew >/dev/null 2>&1; then
         echo "homebrew installed, updating instead"
         brew update
     else
         echo "Installing Homebrew"     
-        NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        NONINTERACTIVE=1 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         echo >> "$HOME"/.zprofile
         echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME"/.zprofile
         eval "$(/usr/local/bin/brew shellenv)"
@@ -139,7 +136,7 @@ install_homebrew() {
 }
 
 install_php_macOS() {
-    if brew list php &>/dev/null; then
+    if brew list php >/dev/null 2>&1; then
         echo "PHP already installed, updating"
         brew upgrade php
     else
@@ -148,7 +145,6 @@ install_php_macOS() {
     fi
 
     brew services restart php
-
 }
 
 install_stats() {
@@ -162,7 +158,6 @@ install_stats() {
 
     sleep 5
     open -a stats
-
 }
 
 install_osx_cpu_temp() {
@@ -193,24 +188,23 @@ install_pts(){
     git clone https://github.com/phoronix-test-suite/phoronix-test-suite
 }
 
-
 install_all() {
-    echo "==============================================" 
+    echo "=============================================" 
     echo "    Installing prerequisite software"
     echo "=============================================="
     
-    if [[ "$OS_TYPE" == "macOS" ]]; then
+    if [ "$OS_TYPE" = "macOS" ]; then
         sudo -v
         install_xcode_tools
         install_homebrew
         install_php_macOS
         install_stats
         install_osx_cpu_temp
-    elif [[ "$OS_TYPE" == "debian" ]]; then
+    elif [ "$OS_TYPE" = "debian" ]; then
         update_debian
         install_git_debian
         install_php_debian
-    elif [[ "$OS_TYPE" == "alpine" ]]; then
+    elif [ "$OS_TYPE" = "alpine" ]; then
         update_alpine
         install_git_alpine
         install_php_alpine
@@ -230,72 +224,107 @@ connect_phoromatic() {
 
     echo ""
     echo "----------------------------------------------"
-    read -p "Press enter to use the default Phoromatic URL ("$DEFAULT_PHOROMATIC_URL"), or press 'n' to input a new Phoromatic URL: " userChoice
+    printf "Press enter to use the default Phoromatic URL (%s), or press 'n' to input a new Phoromatic URL: " "$DEFAULT_PHOROMATIC_URL"
+    read userChoice
 
-    if [[ "$userChoice" == "n" ]]; then
+    if [ "$userChoice" = "n" ]; then
         get_phoromatic_url
     else
         PHOROMATIC_URL="$DEFAULT_PHOROMATIC_URL"
     fi
 
-
     echo "=============================================="
-    echo "    Connecting to "$PHOROMATIC_URL"           "
+    printf "    Connecting to %s           \n" "$PHOROMATIC_URL"
     echo "=============================================="
     ./phoronix-test-suite phoromatic.connect "$PHOROMATIC_URL"
 }
 
-# display a random message of the day
-function message_of_the_day() {
-    local messages=(
-        "*insert motd here*"
-        "It's not a bug, it's an undocumented feature."
-        "The 'cloud' is just someone else's computer."
-        "I can explain it to you, but I can't understand it for you."
-        "Artificial intelligence is no match for natural stupidity."
-        "When in doubt, add another if statement."
-        "Terminal: Where MacOS users pretend they're Linux users."
-        "Macs don't get viruses, they get 'unexpected behaviors.'"
-        "MacOS: Because sometimes you just want things to 'just work'... eventually."
-        "Your refurbished laptop has seen things. Be kind to it."
-        "Refurbished laptop: like adopting a pet—it may have a mysterious past, but it still has plenty of love to give."
-        "Linux is free only if your time has no value."
-        "Linux: making the impossible possible and the simple difficult."
-        "Your CPU is not supposed to function as a space heater."
-        "The three leading causes of computer failure: dust, dust, and user error."
-        "Is your computer running slow? It's probably carrying the weight of all that dust."
-        "Touch Bar: Apple's way of asking 'How would you like your function keys to be less functional?'"
-        "Apple's idea of repair: 'Have you tried buying a new one?'"
-        "Buying refurbished: Saving the planet, one rejected laptop at a time."
-        "Bash scripting is like cooking with random ingredients from your fridge—occasionally brilliant, often terrifying."
-        "There's a fine line between a working bash script and complete chaos. That line is usually a semicolon."
-        "I don't always test my code, but when I do, I do it in production."
-        "Turning it off and on again: The IT equivalent of 'Put some ice on it.'"
-        "Keyboard not found. Press F1 to continue."
-        "There are two hard problems in computer science: cache invalidation, naming things, and off-by-one errors."
-        "Cloud computing: Never having to worry where your data is, because it's definitely somewhere."
-        "The problem with troubleshooting is that trouble shoots back."
-        "We use version control so we know exactly who to blame."
-        "My laptop's not overheating, it's trying to achieve nuclear fusion with dust particles."
-        "Every Linux distro is the same. Just different enough to break all your scripts."
-        "In Windows, viruses do horrible things to your computer. In Linux, your computer does horrible things to you."
-        "MacOS is Unix with a fashion degree and a trust fund."
-        "MacBook Pro: It's not throttling, it's 'thermal mindfulness.'"
-        "We don't do it because it's easy; we do it because we thought it would be easy"
-        "Never spend 5 hours on a task that you could spend 5 days failing to automate."
-        "There is nothing more permanent than a temporary solution"
-        "Everybody has a test environment; some of us are lucky and have a separate production environment, too."
-        "Backwards compatibility: Retaining all the mistakes of the previous version."
-        "To make an error is human. To spread the error across all servers in an automated way is DevOps."
-        "A good man would rotate SSH keys, but I'm not that man."
-        "Some days you are the bug, and some days you are the windshield"
-        "Next time hit it with a hammer."
-        "Never trust a computer you can’t throw out a window. - Steve Wozniak"
-        "This is JJ. I'm trapped in this computer. Please help."
-        "Please suggest more messages"
-    )
-
-  echo "${messages[$RANDOM % ${#messages[@]}]}"
+# message of the day function - Ash compatible version
+message_of_the_day() {
+    # Using a sequence of if/elif statements as ash doesn't support arrays
+    r=$(($(date +%s) % 40))
+    
+    if [ $r -eq 0 ]; then
+        echo "*insert motd here*"
+    elif [ $r -eq 1 ]; then
+        echo "It's not a bug, it's an undocumented feature."
+    elif [ $r -eq 2 ]; then
+        echo "The 'cloud' is just someone else's computer."
+    elif [ $r -eq 3 ]; then
+        echo "I can explain it to you, but I can't understand it for you."
+    elif [ $r -eq 4 ]; then
+        echo "Artificial intelligence is no match for natural stupidity."
+    elif [ $r -eq 5 ]; then
+        echo "When in doubt, add another if statement."
+    elif [ $r -eq 6 ]; then
+        echo "Terminal: Where MacOS users pretend they're Linux users."
+    elif [ $r -eq 7 ]; then
+        echo "Macs don't get viruses, they get 'unexpected behaviors.'"
+    elif [ $r -eq 8 ]; then
+        echo "MacOS: Because sometimes you just want things to 'just work'... eventually."
+    elif [ $r -eq 9 ]; then
+        echo "Your refurbished laptop has seen things. Be kind to it."
+    elif [ $r -eq 10 ]; then
+        echo "Refurbished laptop: like adopting a pet—it may have a mysterious past, but it still has plenty of love to give."
+    elif [ $r -eq 11 ]; then
+        echo "Linux is free only if your time has no value."
+    elif [ $r -eq 12 ]; then
+        echo "Linux: making the impossible possible and the simple difficult."
+    elif [ $r -eq 13 ]; then
+        echo "Your CPU is not supposed to function as a space heater."
+    elif [ $r -eq 14 ]; then
+        echo "The three leading causes of computer failure: dust, dust, and user error."
+    elif [ $r -eq 15 ]; then
+        echo "Is your computer running slow? It's probably carrying the weight of all that dust."
+    elif [ $r -eq 16 ]; then
+        echo "Touch Bar: Apple's way of asking 'How would you like your function keys to be less functional?'"
+    elif [ $r -eq 17 ]; then
+        echo "Apple's idea of repair: 'Have you tried buying a new one?'"
+    elif [ $r -eq 18 ]; then
+        echo "Buying refurbished: Saving the planet, one rejected laptop at a time."
+    elif [ $r -eq 19 ]; then
+        echo "Bash scripting is like cooking with random ingredients from your fridge—occasionally brilliant, often terrifying."
+    elif [ $r -eq 20 ]; then
+        echo "There's a fine line between a working bash script and complete chaos. That line is usually a semicolon."
+    elif [ $r -eq 21 ]; then
+        echo "I don't always test my code, but when I do, I do it in production."
+    elif [ $r -eq 22 ]; then
+        echo "Turning it off and on again: The IT equivalent of 'Put some ice on it.'"
+    elif [ $r -eq 23 ]; then
+        echo "Keyboard not found. Press F1 to continue."
+    elif [ $r -eq 24 ]; then
+        echo "There are two hard problems in computer science: cache invalidation, naming things, and off-by-one errors."
+    elif [ $r -eq 25 ]; then
+        echo "Cloud computing: Never having to worry where your data is, because it's definitely somewhere."
+    elif [ $r -eq 26 ]; then
+        echo "The problem with troubleshooting is that trouble shoots back."
+    elif [ $r -eq 27 ]; then
+        echo "We use version control so we know exactly who to blame."
+    elif [ $r -eq 28 ]; then
+        echo "My laptop's not overheating, it's trying to achieve nuclear fusion with dust particles."
+    elif [ $r -eq 29 ]; then
+        echo "Every Linux distro is the same. Just different enough to break all your scripts."
+    elif [ $r -eq 30 ]; then
+        echo "In Windows, viruses do horrible things to your computer. In Linux, your computer does horrible things to you."
+    elif [ $r -eq 31 ]; then
+        echo "MacOS is Unix with a fashion degree and a trust fund."
+    elif [ $r -eq 32 ]; then
+        echo "MacBook Pro: It's not throttling, it's 'thermal mindfulness.'"
+    elif [ $r -eq 33 ]; then
+        echo "We don't do it because it's easy; we do it because we thought it would be easy"
+    elif [ $r -eq 34 ]; then
+        echo "Never spend 5 hours on a task that you could spend 5 days failing to automate."
+    elif [ $r -eq 35 ]; then
+        echo "There is nothing more permanent than a temporary solution"
+    elif [ $r -eq 36 ]; then
+        echo "Everybody has a test environment; some of us are lucky and have a separate production environment, too."
+    elif [ $r -eq 37 ]; then
+        echo "To make an error is human. To spread the error across all servers in an automated way is DevOps."
+    elif [ $r -eq 38 ]; then
+        echo "This is JJ. I'm trapped in this computer. Please help."
+    elif [ $r -eq 39 ]; then
+        echo "Please suggest more messages"
+    fi
 }
 
 welcome_message() {
