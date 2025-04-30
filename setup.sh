@@ -21,10 +21,10 @@ get_priv_cmd() {
     if [[ $(whoami) == "root" ]]; then
         is_root="y"
         echo "running as root"
-    elif command -v doas &>/dev/null 2>&1; then
+    elif command -v doas >/dev/null 2>&1; then
         priv_cmd="doas"
         echo "using 'doas'"
-    elif command -v sudo &>/dev/null 2>&1; then
+    elif command -v sudo >/dev/null 2>&1; then
         priv_cmd="sudo"
         echo "using 'sudo'"
     else

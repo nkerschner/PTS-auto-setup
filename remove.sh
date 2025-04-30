@@ -14,10 +14,10 @@ get_priv_cmd() {
     if [[ $(whoami) == "root" ]]; then
         is_root="y"
         echo "running as root"
-    elif command -v doas &>/dev/null 2>&1; then
+    elif command -v doas >/dev/null 2>&1; then
         priv_cmd="doas"
         echo "using 'doas'"
-    elif command -v sudo &>/dev/null 2>&1; then
+    elif command -v sudo >/dev/null 2>&1; then
         priv_cmd="sudo"
         echo "using 'sudo'"
     else
@@ -29,10 +29,10 @@ get_priv_cmd() {
 detect_os() {
     if echo "$OSTYPE" | grep -q "darwin"; then
         OS_TYPE="macOS"
-    elif apt -v &>/dev/null 2>&1; then
+    elif apt -v >/dev/null 2>&1; then
         OS_TYPE="debian"
         get_priv_cmd
-    elif apk version &>/dev/null 2>&1; then
+    elif apk version >/dev/null 2>&1; then
         OS_TYPE="alpine"
         get_priv_cmd
     elif command -v dnf >/dev/null 2>&1; then
@@ -116,7 +116,7 @@ remove_php_rhel() {
 
 
 remove_homebrew() {
-    if command -v brew &>/dev/null 2>&1; then
+    if command -v brew >/dev/null 2>&1; then
         echo "Uninstalling Homebrew"
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 
@@ -129,7 +129,7 @@ remove_homebrew() {
 }
 
 remove_php_macOS() {
-    if brew list php &>/dev/null 2>&1; then
+    if brew list php >/dev/null 2>&1; then
         echo "Removing PHP"
         brew remove php
     else
