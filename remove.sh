@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 #######################################################
 # PTS-Auto-Setup - removal script for Phoronix-Test-suite
@@ -7,11 +7,11 @@
 #######################################################
 
 go_home() {
-    cd $HOME
+    cd "$HOME"
 }
 
 get_priv_cmd() {
-    if [[ $(whoami) == "root" ]]; then
+    if [ "$(whoami)" = "root" ]; then
         is_root="y"
         echo "running as root"
     elif command -v doas >/dev/null 2>&1; then
@@ -47,7 +47,7 @@ detect_os() {
 }
 
 detect_arch() {
-    if [[ "$(uname -m)" == "arm64" ]]; then
+    if [ "$(uname -m)" = "arm64" ]; then
         ARCH="arm64"
     else
         ARCH="x86_64"
@@ -58,7 +58,7 @@ detect_arch() {
 
 #----debian----
 remove_git_debian() {
-   if [[ "$is_root" == "y" ]]; then
+   if [ "$is_root" = "y" ]; then
         apt remove -y git
         apt autoremove -y
     else
@@ -68,7 +68,7 @@ remove_git_debian() {
 }
 
 remove_php_debian() {
-   if [[ "$is_root" == "y" ]]; then
+   if [ "$is_root" = "y" ]; then
         apt remove -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
         apt autoremove -y
     else
@@ -79,7 +79,7 @@ remove_php_debian() {
 
 #----alpine----
 remove_git_alpine() {
-    if [[ "$is_root" == "y" ]]; then
+    if [ "$is_root" = "y" ]; then
         apk del git
     else
         "$priv_cmd" apk del git
@@ -87,7 +87,7 @@ remove_git_alpine() {
 }
 
 remove_php_alpine() {
-    if [[ "$is_root" == "y" ]]; then
+    if [ "$is_root" = "y" ]; then
         apk del php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
     else
         "$priv_cmd" apk del php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
@@ -99,7 +99,7 @@ remove_git_rhel() {
     if [ "$is_root" = "y" ]; then
         dnf remove -y git
     else
-        $priv_cmd dnf remove -y git
+        "$priv_cmd" dnf remove -y git
     fi
 }
 
@@ -107,7 +107,7 @@ remove_php_rhel() {
     if [ "$is_root" = "y" ]; then
         dnf remove -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
     else
-        $priv_cmd dnf remove -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
+        "$priv_cmd" dnf remove -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
     fi
 }
 
@@ -121,7 +121,7 @@ remove_homebrew() {
         NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/uninstall.sh)"
 
         if [ -d "/usr/local/Homebrew/" ]; then
-            rm -rf "/usr/local/Homebrew/ "
+            rm -rf "/usr/local/Homebrew/"
         fi
     else
         echo "Homebrew not found"
@@ -180,19 +180,19 @@ remove_all() {
     echo "    Removing prerequisite software"
     echo "=============================================="
     
-    if [[ "$OS_TYPE" == "macOS" ]]; then
+    if [ "$OS_TYPE" = "macOS" ]; then
         sudo -v
         remove_php_macOS
         remove_stats
         remove_osx_cpu_temp
         remove_homebrew
-    elif [[ "$OS_TYPE" == "debian" ]]; then
+    elif [ "$OS_TYPE" = "debian" ]; then
         remove_git_debian
         remove_php_debian
-    elif [[ "$OS_TYPE" == "alpine" ]]; then
+    elif [ "$OS_TYPE" = "alpine" ]; then
         remove_git_alpine
         remove_php_alpine
-    elif [[ "$OS_TYPE" == "rhel" ]]; then
+    elif [ "$OS_TYPE" = "rhel" ]; then
         remove_git_rhel
         remove_php_rhel
     else

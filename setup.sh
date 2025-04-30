@@ -18,7 +18,7 @@ get_phoromatic_url() {
 }
 
 get_priv_cmd() {
-    if [[ $(whoami) == "root" ]]; then
+    if [ "$(whoami)" = "root" ]; then
         is_root="y"
         echo "running as root"
     elif command -v doas >/dev/null 2>&1; then
@@ -67,8 +67,8 @@ update_debian() {
         apt update
         apt upgrade -y
     else
-        $priv_cmd apt update
-        $priv_cmd apt upgrade -y
+        "$priv_cmd" apt update
+        "$priv_cmd" apt upgrade -y
     fi
 }
 
@@ -76,7 +76,7 @@ install_git_debian() {
     if [ "$is_root" = "y" ]; then
         apt install -y git
     else
-        $priv_cmd apt install -y git
+        "$priv_cmd" apt install -y git
     fi
 }
 
@@ -84,7 +84,7 @@ install_php_debian() {
     if [ "$is_root" = "y" ]; then
         apt install -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
     else
-        $priv_cmd apt install -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
+        "$priv_cmd" apt install -y php-cli php-xml php-zip php-gd php-curl php-fpdf php-sqlite3 php-ssh2
     fi
 }
 
@@ -94,8 +94,8 @@ update_alpine() {
         apk update
         apk upgrade
     else
-        $priv_cmd apk update 
-        $priv_cmd apk upgrade
+        "$priv_cmd" apk update 
+        "$priv_cmd" apk upgrade
     fi
 }
 
@@ -103,7 +103,7 @@ install_git_alpine() {
     if [ "$is_root" = "y" ]; then
         apk add git
     else
-        $priv_cmd apk add git
+        "$priv_cmd" apk add git
     fi
 }
 
@@ -111,7 +111,7 @@ install_php_alpine() {
     if [ "$is_root" = "y" ]; then
         apk add php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
     else
-        $priv_cmd apk add php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
+        "$priv_cmd" apk add php81-cli php81-dom php81-simplexml php81-zip php81-gd php81-curl php81-sqlite3 php81-pecl-ssh2 php81-posix php81-ctype php81-fileinfo php81-pcntl php81-sockets php81-openssl php81-bz2
     fi
 }
 
@@ -120,7 +120,7 @@ update_rhel() {
     if [ "$is_root" = "y" ]; then
         dnf update -y
     else
-        $priv_cmd dnf update -y
+        "$priv_cmd" dnf update -y
     fi
 }
 
@@ -128,7 +128,7 @@ install_git_rhel() {
     if [ "$is_root" = "y" ]; then
         dnf install -y git
     else
-        $priv_cmd dnf install -y git
+        "$priv_cmd" dnf install -y git
     fi
 }
 
@@ -136,7 +136,7 @@ install_php_rhel() {
     if [ "$is_root" = "y" ]; then
         dnf install -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
     else
-        $priv_cmd dnf install -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
+        "$priv_cmd" dnf install -y php-cli php-xml php-json php-zip php-gd php-sqlite3 php-posix
     fi
 }
 
@@ -160,8 +160,8 @@ install_homebrew() {
     else
         echo "Installing Homebrew"     
         NONINTERACTIVE=1 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        echo >> "$HOME"/.zprofile
-        echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "$HOME"/.zprofile
+        echo >> "${HOME}/.zprofile"
+        echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "${HOME}/.zprofile"
         eval "$(/usr/local/bin/brew shellenv)"
     fi
 }
