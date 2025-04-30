@@ -3,7 +3,7 @@
 #######################################################
 # PTS-Auto-Setup - setup script for Phoronix-Test-suite
 # https://github.com/nkerschner/PTS-auto-setup/setup.sh
-# v2.2 (modern POSIX compliant version)
+# v2.3 (modern POSIX compliant version)
 #######################################################
 
 DEFAULT_PHOROMATIC_URL=phoromatic:8433/Q1CST9
@@ -115,11 +115,9 @@ install_php_alpine() {
 #----rhel----
 update_rhel() {
     if [ "$is_root" = "y" ]; then
-        dnf update
-        dnf upgrade -y
+        dnf update -y
     else
         $priv_cmd dnf update
-        $priv_cmd dnf upgrade -y
     fi
 }
 
