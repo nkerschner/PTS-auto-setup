@@ -159,7 +159,7 @@ install_homebrew() {
         brew update
     else
         echo "Installing Homebrew"     
-        NONINTERACTIVE=1 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/nkerschner/hb-install/HEAD/install.sh)"
+        NONINTERACTIVE=1 /bin/sh -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         echo >> "${HOME}/.zprofile"
         echo 'eval "$(/usr/local/bin/brew shellenv)"' >> "${HOME}/.zprofile"
         eval "$(/usr/local/bin/brew shellenv)"
